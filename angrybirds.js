@@ -12,11 +12,12 @@ function preload(){
     loadImage("sprites/stella.png")
   ];
   boxImg = loadImage("sprites/box.png");
-  groundImg = loadImage("sprites/ground.png");  
+  groundImg = loadImage("sprites/ground.png");
+  bgImg = loadImage("sprites/fondo.png"); // Cargar la imagen del fondo
 }
 
 function setup() {
-  const canvas = createCanvas(640, 480);
+  const canvas = createCanvas(984, 480);
   
   engine = Engine.create();
   world = engine.world;
@@ -51,10 +52,11 @@ function setup() {
     birdImg[0]);
   
   slingShot = new SlingShot(bird);
+  noSmooth();
 }
 
 function draw() {
-  background(80, 120, 155);
+  background(bgImg); // Usar la imagen del fondo
   
   Engine.update(engine);
   slingShot.fly(mc);
