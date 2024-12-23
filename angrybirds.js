@@ -8,11 +8,11 @@ let engine, world, ground, bird,
 
 function preload(){
   birdImg = [
-    loadImage("sprites/red.webp"),
-    loadImage("sprites/stella.webp")
+    loadImage("sprites/red.png"),
+    loadImage("sprites/stella.png")
   ];
   boxImg = loadImage("sprites/box.png");
-  groundImg = loadImage("sprites/ground.jpg");  
+  groundImg = loadImage("sprites/ground.png");  
 }
 
 function setup() {
@@ -54,7 +54,7 @@ function setup() {
 }
 
 function draw() {
-  background(0, 181, 226);
+  background(80, 120, 155);
   
   Engine.update(engine);
   slingShot.fly(mc);
