@@ -4,24 +4,27 @@ const {
 = Matter;
 
 let engine, world, ground, bird, slingShot, boxes = [], mc, birdImg = [], boxImg, groundImg, bgImg, pigImg, pigs = [], currentLevel = 0;
+let iceImg, rockImg;
 function preload() {
   birdImg = [
     loadImage("sprites/red.png"),
     loadImage("sprites/stella.png")
   ];
   boxImg = loadImage("sprites/box.png");
+  iceImg = loadImage("sprites/ice.png"); // Bloque de hielo
+  rockImg = loadImage("sprites/rock.png"); // Bloque de piedra
   groundImg = loadImage("sprites/ground.png");
   bgImg = loadImage("sprites/fondo.png");
   pigImg = [
-    loadImage("sprites/pig1.png"), // Small Pig = bola 1
-    loadImage("sprites/pig2.png"), // Medium Pig = bola 2
-    loadImage("sprites/pig3.png"), // Large Pig = bola 3
-    loadImage("sprites/pig4.png"), // Helmet Pig = bola 8
-    loadImage("sprites/pig5.png"), // Mustache Pig = bola 12
-    loadImage("sprites/pig6.png")  // King Pig = bola 15
+    loadImage("sprites/pig1.png"),
+    loadImage("sprites/pig2.png"),
+    loadImage("sprites/pig3.png"),
+    loadImage("sprites/pig4.png"),
+    loadImage("sprites/pig5.png"),
+    loadImage("sprites/pig6.png")
   ];
   slingshotImg = loadImage("sprites/slingshot.png");
-  levelData = loadJSON("config.json"); // Cargar el archivo JSON
+  levelData = loadJSON("config.json");
 }
 
 function setup() {
@@ -43,13 +46,17 @@ function setup() {
   }
   );
   World.add(world, mc);
-
   ground = new Ground(width / 2, height - 10, width, 20, groundImg);
-
+  // Crear bloques de diferentes tipos
   for (let j = 0; j < 4; j++) {
     for (let i = 0; i < 4; i++) {
-      const box = new Box(400 + j * 60, height - 40 * (i + 1), 40, 40, boxImg);
-      boxes.push(box);
+      if (i % 3 === 0) {
+        boxes.push(new Box(400 + j * 60, height - 40 * (i + 1), 40, 40, iceImg, 1)); // Hielo
+      } else if (i % 3 === 1) {
+        boxes.push(new Box(400 + j * 60, height - 40 * (i + 1), 40, 40, boxImg, 2)); // Madera
+      } else {
+        boxes.push(new Box(400 + j * 60, height - 40 * (i + 1), 40, 40, rockImg, 3)); // Piedra
+      }
     }
   }
   noSmooth();
@@ -65,20 +72,31 @@ function setup() {
   pigs.push(new Pig(700, 320, 35, "mustache", pigImg[4])); // pig5.png
   pigs.push(new Pig(750, 300, 40, "king", pigImg[5]));     // pig6.png
   // Detectar colisiones
-  Matter.Events.on(engine, "collisionStart", (event) => {
-    for (const pair of event.pairs) {
-      const bodyA = pair.bodyA;
-      const bodyB = pair.bodyB;
+Matter.Events.on(engine, "collisionStart", (event) => {
+  for (const pair of event.pairs) {
+    const bodyA = pair.bodyA;
+    const bodyB = pair.bodyB;
 
-      // Comprobar si un cerdo está involucrado en la colisión
-      for (const pig of pigs) {
-        if (bodyA === pig.body || bodyB === pig.body) {
-          pig.checkCollisionImpact(pair);
-        }
+    // Comprobar si un cerdo está involucrado en la colisión
+    for (const pig of pigs) {
+      if (bodyA === pig.body || bodyB === pig.body) {
+        pig.checkCollisionImpact(pair);
+      }
+    }
+
+    // Comprobar si un bloque está involucrado en la colisión
+    for (const box of boxes) {
+      if (bodyA === box.body || bodyB === box.body) {
+        // Obtener la velocidad relativa del impacto
+        const velocity = Math.max(
+          Math.abs(bodyA.velocity.x - bodyB.velocity.x),
+          Math.abs(bodyA.velocity.y - bodyB.velocity.y)
+        );
+        box.takeDamage(velocity * 50); // Reducir salud según la fuerza del impacto
       }
     }
   }
-  );
+});
   const walls = [
     Bodies.rectangle(width / 2, -10, width, 20, {
   isStatic:
@@ -168,13 +186,29 @@ function loadLevel(levelIndex) {
 
   // Añadir las cajas
   for (const box of level.boxes) {
-    boxes.push(new Box(box.x, box.y, box.w, box.h, boxImg));
+    let img, hardness;
+
+    // Asignar imagen y dureza según el tipo
+    switch (box.type) {
+      case "ice":
+        img = iceImg;
+        hardness = 10;
+        break;
+      case "rock":
+        img = rockImg;
+        hardness = 20;
+        break;
+      case "box":
+      default:
+        img = boxImg;
+        hardness = 15;
+        break;
+    }
+
+    // Crear la caja con las propiedades específicas
+    boxes.push(new Box(box.x, box.y, box.w, box.h, img, hardness));
   }
-console.log(`Cajas cargadas:
-  $ {
-    boxes.length
-  }
-  `);
+  console.log(`Cajas cargadas: ${boxes.length}`);
 
   // Añadir los cerdos
   for (const pig of level.pigs) {
