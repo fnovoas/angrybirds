@@ -20,6 +20,7 @@ function preload() {
     loadImage("sprites/pig5.png"), // Mustache Pig = bola 12
     loadImage("sprites/pig6.png")  // King Pig = bola 15
   ];
+  slingshotImg = loadImage("sprites/slingshot.png");
   levelData = loadJSON("config.json"); // Cargar el archivo JSON
 }
 
@@ -99,10 +100,27 @@ function setup() {
 }
 
 function draw() {
-  background(bgImg);
+  // Limpia el canvas con un fondo blanco
+  background(255);
+
+  // Ajustar la imagen de fondo para cubrir todo el canvas correctamente
+  let canvasAspectRatio = width / height;
+  let imageAspectRatio = bgImg.width / bgImg.height;
+
+  if (imageAspectRatio > canvasAspectRatio) {
+    // Imagen más ancha que el canvas, ajusta por altura
+    let imgHeight = height;
+    let imgWidth = imgHeight * imageAspectRatio;
+    image(bgImg, (width - imgWidth) / 2, 0, imgWidth, imgHeight);
+  } else {
+    // Imagen más alta que el canvas, ajusta por ancho
+    let imgWidth = width;
+    let imgHeight = imgWidth / imageAspectRatio;
+    image(bgImg, 0, (height - imgHeight) / 2, imgWidth, imgHeight);
+  }
+
   Engine.update(engine);
   slingShot.fly(mc);
-
   ground.show();
 
   // Asegurar que todas las cajas se dibujen
