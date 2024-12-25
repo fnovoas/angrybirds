@@ -5,6 +5,11 @@ const {
 
 let engine, world, ground, bird, slingShot, boxes = [], mc, birdImg = [], boxImg, groundImg, bgImg, pigImg, pigs = [], currentLevel = 0;
 let iceImg, rockImg;
+let trajectoryPoints = []; // Almacena los puntos blancos de la trayectoria
+const maxTrajectoryPoints = 6; // Número máximo de puntos visibles
+const minSeparation = 3; // Separación mínima entre puntos
+const maxSeparation = 10; // Separación máxima entre puntos
+
 function preload() {
   birdImg = [
     loadImage("sprites/red.png"),
@@ -144,6 +149,17 @@ function draw() {
   // Asegurar que todas las cajas se dibujen
   for (const box of boxes) {
     box.show();
+  }
+
+  // Dibujar los puntos de trayectoria
+  slingShot.calculateTrajectory(); // Actualizar los puntos
+  for (const point of trajectoryPoints) {
+    push();
+    fill(255);
+    stroke(0);
+    strokeWeight(1);
+    ellipse(point.x, point.y, point.size); // Dibujar un círculo por punto
+    pop();
   }
 
   slingShot.show();
