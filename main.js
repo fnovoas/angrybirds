@@ -126,21 +126,8 @@ function draw() {
   // Limpia el canvas con un fondo blanco
   background(255);
 
-  // Ajustar la imagen de fondo para cubrir todo el canvas correctamente
-  let canvasAspectRatio = width / height;
-  let imageAspectRatio = bgImg.width / bgImg.height;
-
-  if (imageAspectRatio > canvasAspectRatio) {
-    // Imagen más ancha que el canvas, ajusta por altura
-    let imgHeight = height;
-    let imgWidth = imgHeight * imageAspectRatio;
-    image(bgImg, (width - imgWidth) / 2, 0, imgWidth, imgHeight);
-  } else {
-    // Imagen más alta que el canvas, ajusta por ancho
-    let imgWidth = width;
-    let imgHeight = imgWidth / imageAspectRatio;
-    image(bgImg, 0, (height - imgHeight) / 2, imgWidth, imgHeight);
-  }
+  //RESIZE background image
+  image(bgImg, bgImg.width , bgImg.height, width, height+50);
 
   Engine.update(engine);
   slingShot.fly(mc);
