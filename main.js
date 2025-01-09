@@ -9,6 +9,7 @@ let trajectoryPoints = []; // Almacena los puntos blancos de la trayectoria
 const maxTrajectoryPoints = 6; // Número máximo de puntos visibles
 const minSeparation = 3; // Separación mínima entre puntos
 const maxSeparation = 10; // Separación máxima entre puntos
+let gameOver = false; // Bandera para evitar múltiples llamadas
 
 function preload() {
   birdImg = [
@@ -29,11 +30,24 @@ function preload() {
     loadImage("sprites/pig6.png")
   ];
   slingshotImg = loadImage("sprites/slingshot.png");
-  levelData = loadJSON("config.json");
+  levelData = loadJSON("config.json", () => { // Cargar configuración de niveles
+    console.log("Archivo config.json cargado");
+  }, () => {
+    console.error("Error al cargar config.json");
+  });
+}
+
+function validateLevelData(level) {
+  if (!level.boxes || !Array.isArray(level.boxes) || !level.pigs || !Array.isArray(level.pigs)) {
+    console.error("Nivel inválido en config.json");
+    return false;
+  }
+  return true;
 }
 
 function setup() {
   const canvas = createCanvas(984, 480);
+  userStartAudio(); // Activar AudioContext tras interacción del usuario
   engine = Engine.create();
   world = engine.world;
 
@@ -51,7 +65,7 @@ function setup() {
   }
   );
   World.add(world, mc);
-  ground = new Ground(width / 2, height - 10, width, 20, groundImg);
+  ground = new Ground(width / 2, height - 10, width, 20, groundImg); // Crear el suelo
   // Crear bloques de diferentes tipos
   for (let j = 0; j < 4; j++) {
     for (let i = 0; i < 4; i++) {
@@ -67,15 +81,11 @@ function setup() {
   noSmooth();
   bird = new Bird(120, 375, 20, 2, birdImg[0]);
   slingShot = new SlingShot(bird);
-  loadLevel(0); // Cargar el primer nivel del archivo JSON
-
-  // Añadir cerdos de diferentes tipos con la imagen específica
-  pigs.push(new Pig(450, 400, 20, "small", pigImg[0]));    // pig1.png
-  pigs.push(new Pig(550, 380, 25, "medium", pigImg[1]));   // pig2.png
-  pigs.push(new Pig(600, 360, 30, "large", pigImg[2]));    // pig3.png
-  pigs.push(new Pig(650, 340, 30, "helmet", pigImg[3]));   // pig4.png
-  pigs.push(new Pig(700, 320, 35, "mustache", pigImg[4])); // pig5.png
-  pigs.push(new Pig(750, 300, 40, "king", pigImg[5]));     // pig6.png
+  if (levelData && levelData.levels && levelData.levels.length > 0) {
+    loadLevel(0); // Cargar el primer nivel del archivo JSON
+  } else {
+    console.error("No se encontraron niveles en config.json");
+  } 
   // Detectar colisiones
 Matter.Events.on(engine, "collisionStart", (event) => {
   for (const pair of event.pairs) {
@@ -128,7 +138,6 @@ function draw() {
 
   //RESIZE background image
   image(bgImg, bgImg.width , bgImg.height, width, height+50);
-
   Engine.update(engine);
   slingShot.fly(mc);
   ground.show();
@@ -176,9 +185,19 @@ function keyPressed() {
     bird = new Bird(120, 375, 20, 2, birdImg[index]);
     slingShot.attach(bird);
   }
+  if (key === 'r') {
+    console.log("Reiniciando nivel...");
+    loadLevel(currentLevel);
+  }
 }
 
 function loadLevel(levelIndex) {
+  console.log(`Cargando nivel ${levelIndex}`);
+  // Verificar que el índice sea válido
+  if (!levelData.levels || levelIndex < 0 || levelIndex >= levelData.levels.length) {
+    console.error(`Nivel inválido: ${levelIndex}`);
+    return; // Salir de la función si el nivel no existe
+  }
   const level = levelData.levels[levelIndex];
 
   // Eliminar todos los cuerpos actuales
@@ -216,29 +235,46 @@ function loadLevel(levelIndex) {
   // Añadir los cerdos
   for (const pig of level.pigs) {
     const pigTypeIndex = ["small", "medium", "large", "helmet", "mustache", "king"].indexOf(pig.type);
-    pigs.push(new Pig(pig.x, pig.y, pig.r, pig.type, pigImg[pigTypeIndex], pig.score));
-  }
-}
-
-function nextLevel() {
-  currentLevel++;
-  if (currentLevel < levelData.levels.length) {
-    loadLevel(currentLevel);
-    bird = new Bird(120, 375, 20, 2, birdImg[0]);
-    slingShot.attach(bird);
-    console.log(`Nivel $ {
-      currentLevel + 1
+    if (pigTypeIndex >= 0 && pigTypeIndex < pigImg.length) {
+      pigs.push(new Pig(pig.x, pig.y, pig.type, pigImg[pigTypeIndex]));
+    } else {
+      console.error(`Tipo de cerdo inválido: ${pig.type}`);
     }
-    cargado`);
-  } else {
-    console.log("¡Victoria!");
-    noLoop(); // Detener el juego
   }
-}
+  console.log(`Cajas cargadas: ${boxes.length}`);
+  }
 
-function checkLevelCompletion() {
-  const allDefeated = pigs.every(pig => pig.isDefeated);
-  if (allDefeated) {
-    nextLevel();
-  }
-}
+  function nextLevel() {
+    // Verificar si el juego ya terminó
+    if (gameOver) return; // Evitar múltiples llamadas si la bandera ya está activa
+    console.log("Pasando al siguiente nivel");
+    
+    // Incrementar el índice del nivel actual
+    currentLevel++;
+  
+    // Comprobar si se ha alcanzado el último nivel
+    if (currentLevel >= levelData.levels.length) {
+      console.log("¡Victoria! Has completado todos los niveles."); // Mensaje final de victoria
+      gameOver = true; // Marcar el juego como terminado
+      noLoop(); // Detener la ejecución del juego
+      return; // Salir de la función
+    }
+  
+    // Si aún hay niveles disponibles, cargar el siguiente nivel
+    console.log(`Cargando nivel ${currentLevel}`);
+    loadLevel(currentLevel); // Cargar la configuración del nuevo nivel
+  
+    // Reiniciar el pájaro y la resortera para el nuevo nivel
+    bird = new Bird(120, 375, 20, 2, birdImg[0]); // Crear un nuevo pájaro
+    slingShot.attach(bird); // Reconectar el pájaro a la resortera
+  }  
+
+  function checkLevelCompletion() {
+    if (currentLevel >= levelData.levels.length) return; // Salir si ya no hay más niveles
+    const allDefeated = pigs.every(pig => pig.isDefeated);
+    if (allDefeated) {
+      console.log("Todos los cerdos están derrotados");
+      console.log("Nivel completado");
+      nextLevel();
+    }
+  }  
