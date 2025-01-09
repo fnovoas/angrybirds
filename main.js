@@ -10,6 +10,7 @@ const maxTrajectoryPoints = 6; // Número máximo de puntos visibles
 const minSeparation = 3; // Separación mínima entre puntos
 const maxSeparation = 10; // Separación máxima entre puntos
 let gameOver = false; // Bandera para evitar múltiples llamadas
+let birdsQueue = []; // Manejar los pájaros disponibles y su orden
 
 function preload() {
   birdImg = [
@@ -132,6 +133,27 @@ Matter.Events.on(engine, "collisionStart", (event) => {
   World.add(world, walls);
 }
 
+function displayBirdQueue() {
+  const birdIconSize = 40; // Tamaño de las imágenes de los pájaros
+  const margin = 8; // Espacio entre los íconos
+  const startY = height - birdIconSize - 1; // Posición inicial en Y
+  let startX;
+
+  if (birdsQueue.length === 1) {
+    // Si solo hay un pájaro, colócalo cerca de la resortera
+    startX = 100; // Ajusta este valor según la posición de la resortera
+  } else {
+    // Si hay más pájaros, empieza desde la izquierda
+    startX = 10;
+  }
+
+  for (let i = 0; i < birdsQueue.length; i++) {
+    const birdData = birdsQueue[i];
+    const x = startX + i * (birdIconSize + margin); // Calcula la posición horizontal
+    image(birdData.img, x, startY, birdIconSize, birdIconSize); // Dibuja el ícono del pájaro
+  }
+}
+
 function draw() {
   // Limpia el canvas con un fondo blanco
   background(255);
@@ -176,18 +198,31 @@ function draw() {
     }
   }
   checkLevelCompletion(); // Revisar si todos los cerdos están derrotados
+  displayBirdQueue(); // Mostrar la cola de pájaros
 }
 
 function keyPressed() {
-  if (key == ' ') {
-    World.remove(world, bird.body);
-    const index = floor(random(0, birdImg.length));
-    bird = new Bird(120, 375, 20, 2, birdImg[index]);
-    slingShot.attach(bird);
+  if (key === ' ') {
+    // Verificar si hay un pájaro sujeto a la resortera
+    if (bird && slingShot.isAttached()) {
+      console.log("El pájaro actual todavía está en la resortera.");
+      return; // No hacer nada si hay un pájaro en la resortera
+    }
+
+    // Si no hay pájaro en la resortera, subir el siguiente de la cola
+    if (birdsQueue.length > 0) {
+      const birdData = birdsQueue.shift(); // Obtener el siguiente pájaro
+      World.remove(world, bird.body); // Eliminar el pájaro anterior (si existe)
+      bird = new Bird(120, 375, 20, 2, birdData.img); // Crear un nuevo pájaro
+      slingShot.attach(bird); // Adjuntar el nuevo pájaro a la resortera
+    } else {
+      console.log("Sin más pájaros disponibles."); // Mostrar mensaje si no hay pájaros en la cola
+    }
   }
+
   if (key === 'r') {
     console.log("Reiniciando nivel...");
-    loadLevel(currentLevel);
+    loadLevel(currentLevel); // Reiniciar el nivel actual
   }
 }
 
@@ -200,16 +235,19 @@ function loadLevel(levelIndex) {
   }
   const level = levelData.levels[levelIndex];
 
-  // Eliminar todos los cuerpos actuales
+  // Eliminar todos los cerdos, cajas y pájaros actuales
   for (const box of boxes) World.remove(world, box.body);
   for (const pig of pigs) World.remove(world, pig.body);
+  if (bird) World.remove(world, bird.body); // Eliminar el pájaro actual
+  birdsQueue = []; // Vaciar la cola de pájaros
+
+  // Reiniciar arrays
   boxes = [];
   pigs = [];
 
-  // Añadir las cajas
+  // Cargar la configuración de las cajas y los cerdos
   for (const box of level.boxes) {
     let img, hardness;
-
     // Asignar imagen y dureza según el tipo
     switch (box.type) {
       case "ice":
@@ -226,7 +264,6 @@ function loadLevel(levelIndex) {
         hardness = 15;
         break;
     }
-
     // Crear la caja con las propiedades específicas
     boxes.push(new Box(box.x, box.y, box.w, box.h, img, hardness));
   }
@@ -241,8 +278,19 @@ function loadLevel(levelIndex) {
       console.error(`Tipo de cerdo inválido: ${pig.type}`);
     }
   }
-  console.log(`Cajas cargadas: ${boxes.length}`);
+  // Cargar los pájaros para el nivel
+  birdsQueue = level.birds.map(type => {
+    const img = type === "red" ? birdImg[0] : birdImg[1];
+    return { type, img };
+  });
+
+  // Configurar el primer pájaro en la resortera
+  if (birdsQueue.length > 0) {
+    const birdData = birdsQueue.shift();
+    bird = new Bird(120, 375, 20, 2, birdData.img);
+    slingShot.attach(bird);
   }
+}
 
   function nextLevel() {
     // Verificar si el juego ya terminó
@@ -270,11 +318,14 @@ function loadLevel(levelIndex) {
   }  
 
   function checkLevelCompletion() {
-    if (currentLevel >= levelData.levels.length) return; // Salir si ya no hay más niveles
     const allDefeated = pigs.every(pig => pig.isDefeated);
     if (allDefeated) {
       console.log("Todos los cerdos están derrotados");
-      console.log("Nivel completado");
       nextLevel();
+    } else if (birdsQueue.length === 0 && !allDefeated) {
+      console.log("Nivel fallido. Reiniciando en 2 segundos...");
+      setTimeout(() => {
+        loadLevel(currentLevel);
+      }, 2000); // Espera 2000 ms (2 segundos) antes de reiniciar
     }
   }  
