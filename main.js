@@ -200,6 +200,7 @@ function draw() {
       }
     }
   }
+  //checkNewBird(); DESCOMENTAR PARA QUE SE SUBAN LOS PAJAROS AUTOMATICAMENTE
   checkLevelCompletion(); // Revisar si todos los cerdos están derrotados
   displayBirdQueue(); // Mostrar la cola de pájaros
 }
@@ -368,8 +369,6 @@ function checkLevelCompletion() {
                       //Math.abs(bird.body.velocity.y) < 0.5 &&
                       //bird.body.position.y > height - 40; // Cerca del suelo
   
-  console.log(birdStopped)
-
   if (birdsQueue.length === 0 && birdStopped) {
     console.log("Nivel fallido. Reiniciando en 2 segundos...");
     setTimeout(() => {
@@ -388,3 +387,18 @@ function checkWorldStillness(){
   }
   return true;
 }
+
+/* DESCOMENTAR PARA QUE SE SUBAN LOS PAJAROS AUTOMATICAMENTE
+function checkNewBird(){
+  if( checkWorldStillness() && !slingShot.isAttached()){
+    if (birdsQueue.length > 0) {
+      const birdData = birdsQueue.shift(); // Obtener el siguiente pájaro
+      World.remove(world, bird.body); // Eliminar el pájaro anterior (si existe)
+      bird = new Bird(120, 375, 20, 2, birdData.img); // Crear un nuevo pájaro
+      slingShot.attach(bird); // Adjuntar el nuevo pájaro a la resortera
+    } else {
+      console.log("Sin más pájaros disponibles."); // Mostrar mensaje si no hay pájaros en la cola
+    }
+  }
+}
+*/
