@@ -11,6 +11,7 @@ const minSeparation = 3; // Separación mínima entre puntos
 const maxSeparation = 10; // Separación máxima entre puntos
 let gameOver = false; // Bandera para evitar múltiples llamadas
 let birdsQueue = []; // Manejar los pájaros disponibles y su orden
+let lastTouchTime;
 
 function preload() {
   birdImg = [
@@ -47,6 +48,7 @@ function validateLevelData(level) {
 }
 
 function setup() {
+  lastTouchTime = null;
   const canvas = createCanvas(984, 480);
   userStartAudio(); // Activar AudioContext tras interacción del usuario
   engine = Engine.create();
@@ -330,7 +332,7 @@ function checkLevelCompletion() { // ESTA FUNCIÓN NO ESTÁ FUNCIONANDO CORRECTA
   // Verificar si ya no hay más pájaros disponibles
   if (birdsQueue.length === 0) {
     // Verificar si el pájaro tocó el suelo
-    const birdOnGround = bird && bird.body.position.y > height - 20;
+    const birdOnGround = bird && bird.body.position.y > height - 40;
 
     // Si el pájaro tocó el suelo, registrar el tiempo si aún no se ha registrado
     if (birdOnGround && lastTouchTime === null) {
