@@ -317,15 +317,58 @@ function loadLevel(levelIndex) {
     slingShot.attach(bird); // Reconectar el pájaro a la resortera
   }  
 
-  function checkLevelCompletion() {
-    const allDefeated = pigs.every(pig => pig.isDefeated);
-    if (allDefeated) {
-      console.log("Todos los cerdos están derrotados");
-      nextLevel();
-    } else if (birdsQueue.length === 0 && !allDefeated) {
-      console.log("Nivel fallido. Reiniciando en 2 segundos...");
-      setTimeout(() => {
-        loadLevel(currentLevel);
-      }, 2000); // Espera 2000 ms (2 segundos) antes de reiniciar
+function checkLevelCompletion() { // ESTA FUNCIÓN NO ESTÁ FUNCIONANDO CORRECTAMENTE, PROBAR CON ESTA VERSIÓN O CON LA DE LA LÍNEA 352
+  // Comprobar si todos los cerdos están derrotados
+  const allDefeated = pigs.every(pig => pig.isDefeated);
+  
+  if (allDefeated) {
+    console.log("Todos los cerdos están derrotados");
+    nextLevel();
+    return; // Salir de la función, ya que el nivel está completado
+  }
+
+  // Verificar si ya no hay más pájaros disponibles
+  if (birdsQueue.length === 0) {
+    // Verificar si el pájaro tocó el suelo
+    const birdOnGround = bird && bird.body.position.y > height - 20;
+
+    // Si el pájaro tocó el suelo, registrar el tiempo si aún no se ha registrado
+    if (birdOnGround && lastTouchTime === null) {
+      lastTouchTime = millis(); // Guardar el tiempo actual en milisegundos
+      console.log("El pájaro tocó el suelo. Iniciando contador de 2 segundos...");
     }
-  }  
+
+    // Si han pasado al menos 2 segundos desde que el pájaro tocó el suelo
+    if (lastTouchTime !== null && millis() - lastTouchTime >= 2000) {
+      console.log("Han pasado 2 segundos. Nivel fallido. Reiniciando...");
+      setTimeout(() => {
+        loadLevel(currentLevel); // Reiniciar el nivel actual
+        lastTouchTime = null; // Reiniciar el tiempo de contacto
+      }, 200); // Reiniciar tras una breve espera
+    }
+  }
+}
+
+/*function checkLevelCompletion() {
+  // Comprobar si todos los cerdos están derrotados
+  const allDefeated = pigs.every(pig => pig.isDefeated);
+  
+  if (allDefeated) {
+    console.log("Todos los cerdos están derrotados");
+    nextLevel();
+    return; // Salir de la función, ya que el nivel está completado
+  }
+
+  // Verificar si ya no hay más pájaros y el pájaro actual está quieto
+  const birdStopped = bird && 
+                      Math.abs(bird.body.velocity.x) < 0.5 && 
+                      Math.abs(bird.body.velocity.y) < 0.5 &&
+                      bird.body.position.y > height - 20; // Cerca del suelo
+
+  if (birdsQueue.length === 0 && birdStopped) {
+    console.log("Nivel fallido. Reiniciando en 2 segundos...");
+    setTimeout(() => {
+      loadLevel(currentLevel); // Reiniciar el nivel actual
+    }, 2000); // Espera 2000 ms (2 segundos) antes de reiniciar
+  }
+}*/
