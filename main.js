@@ -12,6 +12,7 @@ const maxSeparation = 10; // Separación máxima entre puntos
 let gameOver = false; // Bandera para evitar múltiples llamadas
 let birdsQueue = []; // Manejar los pájaros disponibles y su orden
 let lastTouchTime;
+const movementThreshold = 0.1;
 
 function preload() {
   birdImg = [
@@ -318,7 +319,7 @@ function loadLevel(levelIndex) {
     bird = new Bird(120, 375, 20, 2, birdImg[0]); // Crear un nuevo pájaro
     slingShot.attach(bird); // Reconectar el pájaro a la resortera
   }  
-
+/*
 function checkLevelCompletion() { // ESTA FUNCIÓN NO ESTÁ FUNCIONANDO CORRECTAMENTE, PROBAR CON ESTA VERSIÓN O CON LA DE LA LÍNEA 352
   // Comprobar si todos los cerdos están derrotados
   const allDefeated = pigs.every(pig => pig.isDefeated);
@@ -350,8 +351,8 @@ function checkLevelCompletion() { // ESTA FUNCIÓN NO ESTÁ FUNCIONANDO CORRECTA
     }
   }
 }
-
-/*function checkLevelCompletion() {
+*/
+function checkLevelCompletion() {
   // Comprobar si todos los cerdos están derrotados
   const allDefeated = pigs.every(pig => pig.isDefeated);
   
@@ -361,11 +362,13 @@ function checkLevelCompletion() { // ESTA FUNCIÓN NO ESTÁ FUNCIONANDO CORRECTA
     return; // Salir de la función, ya que el nivel está completado
   }
 
-  // Verificar si ya no hay más pájaros y el pájaro actual está quieto
-  const birdStopped = bird && 
-                      Math.abs(bird.body.velocity.x) < 0.5 && 
-                      Math.abs(bird.body.velocity.y) < 0.5 &&
-                      bird.body.position.y > height - 20; // Cerca del suelo
+  // Verificar si ya no hay más pájaros y el pájaro actual está en la resortera y los objetos están quietos
+  const birdStopped = !slingShot.isAttached() && checkWorldStillness()
+                      //Math.abs(bird.body.velocity.x) < 0.5 && 
+                      //Math.abs(bird.body.velocity.y) < 0.5 &&
+                      //bird.body.position.y > height - 40; // Cerca del suelo
+  
+  console.log(birdStopped)
 
   if (birdsQueue.length === 0 && birdStopped) {
     console.log("Nivel fallido. Reiniciando en 2 segundos...");
@@ -373,4 +376,15 @@ function checkLevelCompletion() { // ESTA FUNCIÓN NO ESTÁ FUNCIONANDO CORRECTA
       loadLevel(currentLevel); // Reiniciar el nivel actual
     }, 2000); // Espera 2000 ms (2 segundos) antes de reiniciar
   }
-}*/
+}
+
+function checkWorldStillness(){
+  const bodies = world.bodies;
+  for (body of bodies){
+    //si algun objeto se mueve el mundo sigue funcionando
+    if(Math.abs(body.velocity.x) > movementThreshold || Math.abs(bird.body.velocity.y) > movementThreshold ){
+      return false;
+    }
+  }
+  return true;
+}
