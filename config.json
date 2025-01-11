@@ -1,7 +1,7 @@
 {
   "levels": [
     {
-      //level 1
+      
       "boxes": [
         { "x": 400, "y": 440, "w": 40, "h": 40, "type": "ice" },
         { "x": 400, "y": 400, "w": 40, "h": 40, "type": "box" },
@@ -12,7 +12,7 @@
       ],
       "birds": ["red", "red", "stella"]
     },
-    //level 2
+    
     "boxes": [
         { "x": 400, "y": 440, "w": 40, "h": 40, "type": "ice" },
         { "x": 450, "y": 440, "w": 40, "h": 40, "type": "ice" },
@@ -25,7 +25,7 @@
       ],
       "birds": ["red", "red", "stella"]
     },
-    //level 3
+    
     "boxes": [
         { "x": 400, "y": 440, "w": 40, "h": 40, "type": "ice" },
         { "x": 400, "y": 400, "w": 40, "h": 40, "type": "box" },
@@ -35,9 +35,9 @@
         { "x": 450, "y": 400, "type": "small" }
       ],
       "birds": ["red", "red", "stella"]
-    },,
+    },
 
-    //level 4
+    
     "boxes": [
         { "x": 400, "y": 440, "w": 40, "h": 40, "type": "ice" },
         { "x": 400, "y": 400, "w": 40, "h": 40, "type": "box" },
@@ -48,7 +48,7 @@
       ],
       "birds": ["red", "red", "stella"]
     },,
-    //level 5
+    
     {
       "boxes": [
         { "x": 300, "y": 440, "w": 60, "h": 60, "type": "rock" },
