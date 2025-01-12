@@ -2,6 +2,7 @@ class SlingShot {
   constructor(bird) {
     this.pointA = { x: 120, y: 375 }; // Punto fijo de la resortera
     this.maxStretch = 100; // Máxima distancia permitida (en píxeles)
+    this.k = 30; // coeficiente de elasticidad de la resortera
 
     this.sling = Constraint.create({
       pointA: this.pointA,
@@ -42,15 +43,17 @@ class SlingShot {
     // Limitar la distancia al máximo permitido
     distance = Math.min(distance, this.maxStretch);
 
-    const angle = -atan2(birdPos.y - this.pointA.y, birdPos.x - this.pointA.x); // Ángulo hacia adelante
+    const angle = atan2(birdPos.y - this.pointA.y, birdPos.x - this.pointA.x); // Ángulo hacia adelante
+    const velocidadInicialX = Math.sqrt(this.k * (birdPos.x - this.pointA.x) * (birdPos.x - this.pointA.x))
+    const velocidadInicialY = Math.sqrt(this.k * (birdPos.y - this.pointA.y) * (birdPos.y - this.pointA.y))
 
     if (distance > 30) { // Solo mostrar puntos si la tensión supera el 30% del máximo
       const separation = map(distance, 30, this.maxStretch, minSeparation, maxSeparation); // Escalar separación entre puntos
 
       for (let i = 0; i < maxTrajectoryPoints; i++) {
         const t = i * separation / 100; // Tiempo simulado para la trayectoria
-        const x = birdPos.x - cos(angle) * t * 200; // Movimiento horizontal desde el pájaro
-        const y = birdPos.y + sin(angle) * t * 200 + 0.5 * 9.8 * t * t * 200; // Movimiento vertical con gravedad hacia abajo
+        const x = birdPos.x - cos(angle) * t * velocidadInicialX; // Movimiento horizontal desde el pájaro
+        const y = birdPos.y - (sin(angle) * t * velocidadInicialY) + (0.5 * 9.8 * t * t); // Movimiento vertical con gravedad hacia abajo
 
         trajectoryPoints.push({
           x,

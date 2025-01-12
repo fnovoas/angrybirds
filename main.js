@@ -200,7 +200,7 @@ function draw() {
       }
     }
   }
-  //checkNewBird(); DESCOMENTAR PARA QUE SE SUBAN LOS PAJAROS AUTOMATICAMENTE
+  checkNewBird(); // DESCOMENTAR PARA QUE SE SUBAN LOS PAJAROS AUTOMATICAMENTE
   checkLevelCompletion(); // Revisar si todos los cerdos están derrotados
   displayBirdQueue(); // Mostrar la cola de pájaros
 }
@@ -388,7 +388,6 @@ function checkWorldStillness(){
   return true;
 }
 
-/* DESCOMENTAR PARA QUE SE SUBAN LOS PAJAROS AUTOMATICAMENTE
 function checkNewBird(){
   if( checkWorldStillness() && !slingShot.isAttached()){
     if (birdsQueue.length > 0) {
@@ -401,4 +400,3 @@ function checkNewBird(){
     }
   }
 }
-*/
