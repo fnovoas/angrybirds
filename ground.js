@@ -9,7 +9,10 @@ class Ground {
    */
   constructor(x, y, w, h, img) {
     const options = {
-      isStatic: true // Define el cuerpo como estático
+      isStatic: true, // Define el cuerpo como estático
+      collisionFilter: {
+        category: 2,
+      },
     };
     this.body = Bodies.rectangle(x, y, w, h, options);
     this.w = w;

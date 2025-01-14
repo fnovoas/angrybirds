@@ -40,12 +40,14 @@ class Pig {
   }
 
   defeated() {
+    // puede que se pueda elimnar del array de cerdos de una vez
     World.remove(world, this.body);
     this.isDefeated = true;
     console.log(`Pig defeated! Score: ${this.score}`);
     console.log(`Pig removed from world: ${this.body.id}`);
   }  
-
+ 
+  // TODO: No existe la propiedad pair.collision.impulse, se debe corregir.
   checkCollisionImpact(pair) {
     const impactForce = pair.collision.impulse;
     console.log(`Impact force on pig ${this.type}: ${impactForce}`);

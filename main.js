@@ -63,25 +63,27 @@ function setup() {
     mouse,
     collisionFilter:
     {
+    category:
+      4,
     mask:
-      2
+      4
     }
   }
   );
   World.add(world, mc);
   ground = new Ground(width / 2, height - 10, width, 20, groundImg); // Crear el suelo
   // Crear bloques de diferentes tipos
-  for (let j = 0; j < 4; j++) {
-    for (let i = 0; i < 4; i++) {
-      if (i % 3 === 0) {
-        boxes.push(new Box(400 + j * 60, height - 40 * (i + 1), 40, 40, iceImg, 1)); // Hielo
-      } else if (i % 3 === 1) {
-        boxes.push(new Box(400 + j * 60, height - 40 * (i + 1), 40, 40, boxImg, 2)); // Madera
-      } else {
-        boxes.push(new Box(400 + j * 60, height - 40 * (i + 1), 40, 40, rockImg, 3)); // Piedra
-      }
-    }
-  }
+  // for (let j = 0; j < 4; j++) {
+  //   for (let i = 0; i < 4; i++) {
+  //     if (i % 3 === 0) {
+  //       boxes.push(new Box(400 + j * 60, height - 40 * (i + 1), 40, 40, iceImg, 1)); // Hielo
+  //     } else if (i % 3 === 1) {
+  //       boxes.push(new Box(400 + j * 60, height - 40 * (i + 1), 40, 40, boxImg, 2)); // Madera
+  //     } else {
+  //       boxes.push(new Box(400 + j * 60, height - 40 * (i + 1), 40, 40, rockImg, 3)); // Piedra
+  //     }
+  //   }
+  // }
   noSmooth();
   bird = new Bird(120, 375, 20, 2, birdImg[0]);
   slingShot = new SlingShot(bird);
@@ -99,6 +101,8 @@ Matter.Events.on(engine, "collisionStart", (event) => {
     // Comprobar si un cerdo está involucrado en la colisión
     for (const pig of pigs) {
       if (bodyA === pig.body || bodyB === pig.body) {
+        //console.log("Colisión con cerdo detectada");
+        //console.log(pair.collision);
         pig.checkCollisionImpact(pair);
       }
     }

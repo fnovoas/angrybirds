@@ -10,6 +10,10 @@ class SlingShot {
       stiffness: 0.05,
       length: 5,
     });
+
+    this.sling.bodyB.collisionFilter.category = 4;
+    this.sling.bodyB.collisionFilter.mask = 6;
+    
     World.add(world, this.sling);
   }
 
@@ -90,6 +94,7 @@ class SlingShot {
       this.sling.bodyB.position.x > this.sling.pointA.x + 10
     ) {
       this.sling.bodyB.collisionFilter.category = 1;
+      this.sling.bodyB.collisionFilter.mask = 4294967295;
       this.sling.bodyB = null;
     }
   }
@@ -97,6 +102,8 @@ class SlingShot {
   // Método para adjuntar un nuevo pájaro a la resortera
   attach(bird) {
     this.sling.bodyB = bird.body;
+    this.sling.bodyB.collisionFilter.mask = 6;
+    this.sling.bodyB.collisionFilter.category = 4;
   }
 
   // Método para verificar si hay un cuerpo sujeto a la resortera
