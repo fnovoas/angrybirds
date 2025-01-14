@@ -224,6 +224,7 @@ function keyPressed() {
       bird = new Bird(120, 375, 20, 2, birdData.img); // Crear un nuevo pájaro
       slingShot.attach(bird); // Adjuntar el nuevo pájaro a la resortera
     } else {
+      if (bird) { World.remove(world, bird.body); } // Eliminar el pájaro actual
       console.log("Sin más pájaros disponibles."); // Mostrar mensaje si no hay pájaros en la cola
     }
   }
@@ -321,8 +322,8 @@ function loadLevel(levelIndex) {
     loadLevel(currentLevel); // Cargar la configuración del nuevo nivel
   
     // Reiniciar el pájaro y la resortera para el nuevo nivel
-    bird = new Bird(120, 375, 20, 2, birdImg[0]); // Crear un nuevo pájaro
-    slingShot.attach(bird); // Reconectar el pájaro a la resortera
+    // bird = new Bird(120, 375, 20, 2, birdImg[0]); // Crear un nuevo pájaro
+    // slingShot.attach(bird); // Reconectar el pájaro a la resortera
   }  
 /*
 function checkLevelCompletion() { // ESTA FUNCIÓN NO ESTÁ FUNCIONANDO CORRECTAMENTE, PROBAR CON ESTA VERSIÓN O CON LA DE LA LÍNEA 352
