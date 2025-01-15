@@ -12,7 +12,9 @@ const maxSeparation = 10; // Separación máxima entre puntos
 let gameOver = false; // Bandera para evitar múltiples llamadas
 let birdsQueue = []; // Manejar los pájaros disponibles y su orden
 let lastTouchTime;
+let birdSpeedRecord100 = []; // Almacena los ultimos 100 tiempos de vuelo de los pájaros
 const movementThreshold = 0.1;
+let momentumThreshold = 7;
 
 function preload() {
   birdImg = [
@@ -94,28 +96,39 @@ function setup() {
   } 
   // Detectar colisiones
 Matter.Events.on(engine, "collisionStart", (event) => {
+  
   for (const pair of event.pairs) {
     const bodyA = pair.bodyA;
     const bodyB = pair.bodyB;
 
-    // Comprobar si un cerdo está involucrado en la colisión
-    for (const pig of pigs) {
-      if (bodyA === pig.body || bodyB === pig.body) {
-        //console.log("Colisión con cerdo detectada");
-        //console.log(pair.collision);
-        pig.checkCollisionImpact(pair);
-      }
-    }
+    // Calcular momento
+    const momentumBodyA = {
+      x: bodyA.velocity.x * (isFinite(bodyA.mass) ? bodyA.mass : 0),
+      y: bodyA.velocity.y * (isFinite(bodyA.mass) ? bodyA.mass : 0)
+    };
+    const momentumBodyB = {
+      x: bodyB.velocity.x * (isFinite(bodyB.mass) ? bodyB.mass : 0),
+      y: bodyB.velocity.y * (isFinite(bodyB.mass) ? bodyB.mass : 0)
+    };
+    const relativeMomentum = Math.sqrt(
+      Math.pow(momentumBodyA.x - momentumBodyB.x, 2) +
+      Math.pow(momentumBodyA.y - momentumBodyB.y, 2)
+    );
 
-    // Comprobar si un bloque está involucrado en la colisión
-    for (const box of boxes) {
-      if (bodyA === box.body || bodyB === box.body) {
-        // Obtener la velocidad relativa del impacto
-        const velocity = Math.max(
-          Math.abs(bodyA.velocity.x - bodyB.velocity.x),
-          Math.abs(bodyA.velocity.y - bodyB.velocity.y)
-        );
-        box.takeDamage(velocity * 50); // Reducir salud según la fuerza del impacto
+    if (relativeMomentum > momentumThreshold) {
+      console.log("Colisión con momento detectada");
+      for (const pig of pigs) {
+        if (bodyA === pig.body || bodyB === pig.body) {
+          console.log(pair);
+          //const isBirdInvolved = bodyA === bird.body || bodyB === bird.body;
+          //const damage = isBirdInvolved ? relativeMomentum * 2 : relativeMomentum;
+          pig.takeDamage(relativeMomentum);
+        }
+      }
+      for (const box of boxes) {
+        if (bodyA === box.body || bodyB === box.body) {
+          box.takeDamage(relativeMomentum);
+        }
       }
     }
   }
@@ -168,6 +181,15 @@ function draw() {
   //RESIZE background image
   image(bgImg, bgImg.width , bgImg.height, width, height+50);
   Engine.update(engine);
+
+  // Registrar la velocidad del pájaro
+  if (bird && !slingShot.isAttached()) {
+    birdSpeedRecord100.push(bird.body.speed);
+    if (birdSpeedRecord100.length > 100) {
+      birdSpeedRecord100.shift(); // Eliminar el valor más antiguo
+    }
+  }
+
   slingShot.fly(mc);
   ground.show();
 
@@ -192,17 +214,6 @@ function draw() {
 
   for (const pig of pigs) {
     pig.display();
-  }
-  for (const pig of pigs) {
-    if (!pig.isDefeated) {
-      const d = dist(
-        pig.body.position.x, pig.body.position.y,
-        bird.body.position.x, bird.body.position.y
-        );
-      if (d < pig.r + bird.body.circleRadius) {
-        pig.takeDamage();
-      }
-    }
   }
   checkNewBird(); // DESCOMENTAR PARA QUE SE SUBAN LOS PAJAROS AUTOMATICAMENTE
   checkLevelCompletion(); // Revisar si todos los cerdos están derrotados
@@ -261,16 +272,16 @@ function loadLevel(levelIndex) {
     switch (box.type) {
       case "ice":
         img = iceImg;
-        hardness = 10;
+        hardness = 1;
         break;
       case "rock":
         img = rockImg;
-        hardness = 20;
+        hardness = 16;
         break;
       case "box":
       default:
         img = boxImg;
-        hardness = 15;
+        hardness = 8;
         break;
     }
     // Crear la caja con las propiedades específicas
@@ -296,7 +307,7 @@ function loadLevel(levelIndex) {
   // Configurar el primer pájaro en la resortera
   if (birdsQueue.length > 0) {
     const birdData = birdsQueue.shift();
-    bird = new Bird(120, 375, 20, 2, birdData.img);
+    bird = new Bird(120, 375, 20, 4, birdData.img);
     slingShot.attach(bird);
   }
 }

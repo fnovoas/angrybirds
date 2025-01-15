@@ -9,17 +9,17 @@ class Box {
    * @param {number} hardness - Nivel de dureza del bloque (opcional, 1 por defecto).
    * @param {object} options - Opciones físicas para el cuerpo (opcional).
    */
-constructor(x, y, w, h, img, hardness = 1, options = { restitution:
-0.5, friction:
-  0.5
+constructor(x, y, w, h, img, hardness = 1, options = {
+  restitution: 0,
+  friction: 0.5,
+  mass: Math.sqrt(hardness),
 }
 ) {
   this.body = Bodies.rectangle(x, y, w, h, options);
   this.w = w;
   this.h = h;
   this.img = img;
-  this.hardness = hardness; // Nivel de dureza del bloque
-  this.health = hardness * 100; // La salud del bloque depende de su dureza
+  this.health = hardness ** 2; // La salud del bloque depende de su dureza
   World.add(world, this.body);
 }
 
@@ -36,8 +36,8 @@ show() {
 }
 
 // Método para reducir la salud en función del impacto.
-takeDamage(force) {
-  this.health -= force; // Reducir la salud según la fuerza del impacto
+takeDamage(momentum) {
+  this.health -= momentum; // Reducir la salud según la fuerza del impacto
   if (this.health <= 0) {
     World.remove(world, this.body); // Eliminar del mundo físico si la salud llega a 0
     boxes = boxes.filter((box) => box.body !== this.body); // Eliminar de la lista de bloques

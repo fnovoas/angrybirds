@@ -1,12 +1,12 @@
 class Pig {
   // Configuración global para los tipos de cerdos
   static pigAttributes = {
-    small: { r: 20, score: 100, health: 2 },
-    medium: { r: 25, score: 200, health: 4 },
-    large: { r: 30, score: 300, health: 8 },
-    helmet: { r: 30, score: 400, health: 10 },
-    mustache: { r: 35, score: 500, health: 12 },
-    king: { r: 40, score: 1000, health: 14 }
+    small: { r: 20, score: 100, hardness: 4},
+    medium: { r: 25, score: 200, hardness: 5},
+    large: { r: 30, score: 300, hardness: 6},
+    helmet: { r: 30, score: 400, hardness: 7},
+    mustache: { r: 35, score: 500, hardness: 8},
+    king: { r: 40, score: 1000, hardness: 9},
   };
 
   constructor(x, y, type = "small", img) {
@@ -19,21 +19,22 @@ class Pig {
     this.body = Bodies.circle(x, y, attributes.r, {
       restitution: 0.5,
       friction: 0.5,
+      mass: Math.sqrt(attributes.hardness)
     });
 
     this.r = attributes.r;
     this.type = type;
     this.img = img;
     this.score = attributes.score;
-    this.health = attributes.health;
-    this.maxHealth = attributes.health;
+    this.health = attributes.hardness ** 2;
+    this.maxHealth = attributes.hardness ** 2;
     this.isDefeated = false;
 
     World.add(world, this.body);
   }
 
-  takeDamage(damage = 1) {
-    this.health -= damage;
+  takeDamage(momentum) {
+    this.health -= momentum; // Reducir la salud según la fuerza del impacto
     if (this.health <= 0) {
       this.defeated();
     }
@@ -41,14 +42,27 @@ class Pig {
 
   defeated() {
     // puede que se pueda elimnar del array de cerdos de una vez
-    World.remove(world, this.body);
-    this.isDefeated = true;
     console.log(`Pig defeated! Score: ${this.score}`);
     console.log(`Pig removed from world: ${this.body.id}`);
+    this.isDefeated = true;
+    World.remove(world, this.body);
+    pigs = pigs.filter((pig) => pig.body !== this.body); // Eliminar de la lista de cerdo
   }  
  
   // TODO: No existe la propiedad pair.collision.impulse, se debe corregir.
   checkCollisionImpact(pair) {
+    /*
+    if (pair.bodyA !== ground.body && pair.bodyB !== ground.body) {
+      const isBoxCollision = boxes.some(box => pair.bodyA === box.body || pair.bodyB === box.body);
+      if (!isBoxCollision) {
+      console.log("Cerdo fué tocado");
+      }
+    }
+    if (pair.bodyA === bird.body || pair.bodyB === bird.body) {     
+      console.log("Bird hit the pig!, bird was: ", pair.bodyA === bird.body ? "bodyA" : "bodyB");
+    }
+    */
+    
     const impactForce = pair.collision.impulse;
     console.log(`Impact force on pig ${this.type}: ${impactForce}`);
     if (impactForce > 0.1) {

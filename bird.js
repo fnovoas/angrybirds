@@ -8,6 +8,10 @@ class Bird {
       Body.setMass(this.body, mass);
       World.add(world, this.body);
     }
+
+    takeDamage(momentum) {
+      // bird does not take damage
+    }
   
     show() {
       push();

@@ -21,6 +21,10 @@ class Ground {
     World.add(world, this.body);
   }
 
+  takeDamage(momentum) {
+    // El suelo no recibe daño
+  }
+
   // Método para mostrar el suelo en el canvas.
   show() {
     const pos = this.body.position;

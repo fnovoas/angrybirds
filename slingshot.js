@@ -7,8 +7,8 @@ class SlingShot {
     this.sling = Constraint.create({
       pointA: this.pointA,
       bodyB: bird.body,
-      stiffness: 0.05,
-      length: 5,
+      stiffness: 0.02,
+      length: 0,
     });
 
     this.sling.bodyB.collisionFilter.category = 4;
@@ -19,21 +19,21 @@ class SlingShot {
 
   // Método para limitar el estiramiento de la resortera
   restrictStretch() {
-    if (!this.sling.bodyB) return;
+    // if (!this.sling.bodyB) return;
 
-    const birdPos = this.sling.bodyB.position; // Posición actual del pájaro
-    const distance = dist(birdPos.x, birdPos.y, this.pointA.x, this.pointA.y); // Distancia entre pájaro y punto fijo
+    // const birdPos = this.sling.bodyB.position; // Posición actual del pájaro
+    // const distance = dist(birdPos.x, birdPos.y, this.pointA.x, this.pointA.y); // Distancia entre pájaro y punto fijo
 
-    if (distance > this.maxStretch) {
-      const angle = atan2(birdPos.y - this.pointA.y, birdPos.x - this.pointA.x); // Ángulo de estiramiento
+    // if (distance > this.maxStretch) {
+    //   const angle = atan2(birdPos.y - this.pointA.y, birdPos.x - this.pointA.x); // Ángulo de estiramiento
 
-      // Calcular nueva posición en el límite máximo
-      const limitedX = this.pointA.x + cos(angle) * this.maxStretch;
-      const limitedY = this.pointA.y + sin(angle) * this.maxStretch;
+    //   // Calcular nueva posición en el límite máximo
+    //   const limitedX = this.pointA.x + cos(angle) * this.maxStretch;
+    //   const limitedY = this.pointA.y + sin(angle) * this.maxStretch;
 
-      // Establecer nueva posición del pájaro
-      Body.setPosition(this.sling.bodyB, { x: limitedX, y: limitedY });
-    }
+    //   // Establecer nueva posición del pájaro
+    //   Body.setPosition(this.sling.bodyB, { x: limitedX, y: limitedY });
+    // }
   }
 
   // Método para calcular la trayectoria proyectada
@@ -56,8 +56,8 @@ class SlingShot {
 
       for (let i = 0; i < maxTrajectoryPoints; i++) {
         const t = i * separation / 100; // Tiempo simulado para la trayectoria
-        const x = birdPos.x - cos(angle) * t * velocidadInicialX; // Movimiento horizontal desde el pájaro
-        const y = birdPos.y - (sin(angle) * t * velocidadInicialY) + (0.5 * 9.8 * t * t); // Movimiento vertical con gravedad hacia abajo
+        const x = this.pointA.x - cos(angle) * t * velocidadInicialX; // Movimiento horizontal desde el pájaro
+        const y = this.pointA.y - (sin(angle) * t * velocidadInicialY) + (0.5 * 9.8 * t * t); // Movimiento vertical con gravedad hacia abajo
 
         trajectoryPoints.push({
           x,
