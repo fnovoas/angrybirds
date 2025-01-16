@@ -24,9 +24,10 @@
         { "x": 500, "y": 360, "w": 40, "h": 40, "type": "ice" }
       ],
       "pigs": [
-        { "x": 450, "y": 400, "type": "small" }
+        { "x": 450, "y": 400, "type": "small" },
+        { "x": 550, "y": 440, "type": "small" }
       ],
-      "birds": ["red", "red", "stella", "stella"]
+      "birds": ["red", "red"]
     },
     {
     "boxes": [
