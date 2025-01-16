@@ -109,7 +109,7 @@
       "pigs": [
         { "x": 580, "y": 400, "type": "king" }
       ],
-      "birds": ["red", "red", "stella", "stella", "stella", "red", "red"]
+      "birds": ["red", "red", "stella", "stella"]
     },
     
     {
@@ -131,10 +131,11 @@
       ],
       "pigs": [
         { "x": 450, "y": 450, "type": "large" },
+        { "x": 650, "y": 450, "type": "large" },
         { "x": 500, "y": 250, "type": "mustache" },
         { "x": 550, "y": 450, "type": "king" }
       ],
-      "birds": ["stella", "stella", "red", "red","stella", "red", "stella", "red"]
+      "birds": ["stella", "stella", "red", "red"]
     }
   ]
 }
