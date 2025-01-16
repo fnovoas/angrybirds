@@ -62,7 +62,7 @@
         { "x": 720, "y": 320, "w": 40, "h": 40, "type": "rock" }
       ],
       "pigs": [
-        { "x": 650, "y": 400, "type": "mustache" }
+        { "x": 680, "y": 400, "type": "mustache" }
       ],
       "birds": ["red", "stella"]
     },
