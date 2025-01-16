@@ -8,7 +8,7 @@
         { "x": 400, "y": 360, "w": 40, "h": 40, "type": "rock" }
       ],
       "pigs": [
-        { "x": 450, "y": 400, "type": "small" }
+        { "x": 450, "y": 440, "type": "small" }
       ],
       "birds": ["red", "red", "stella"]
     },
