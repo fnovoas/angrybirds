@@ -42,7 +42,7 @@
         { "x": 550, "y": 440, "type": "medium" },
         { "x": 450, "y": 440, "type": "small" }
       ],
-      "birds": ["red", "stella", "red", "stella", "red"]
+      "birds": ["red", "stella", "red"]
     },
 
     {
@@ -51,7 +51,9 @@
         { "x": 600, "y": 400, "w": 40, "h": 40, "type": "rock" },
         { "x": 600, "y": 360, "w": 40, "h": 40, "type": "rock" },
         { "x": 600, "y": 320, "w": 40, "h": 40, "type": "rock" },
+        { "x": 640, "y": 440, "w": 40, "h": 40, "type": "rock" },
         { "x": 640, "y": 320, "w": 40, "h": 40, "type": "rock" },
+        { "x": 680, "y": 440, "w": 40, "h": 40, "type": "rock" },
         { "x": 680, "y": 320, "w": 40, "h": 40, "type": "rock" },
         { "x": 720, "y": 440, "w": 40, "h": 40, "type": "rock" },
         { "x": 720, "y": 400, "w": 40, "h": 40, "type": "rock" },
@@ -59,7 +61,7 @@
         { "x": 720, "y": 320, "w": 40, "h": 40, "type": "rock" }
       ],
       "pigs": [
-        { "x": 650, "y": 440, "type": "mustache" }
+        { "x": 650, "y": 400, "type": "mustache" }
       ],
       "birds": ["red", "red", "stella", "stella", "stella"]
     },
@@ -88,7 +90,7 @@
         { "x": 450, "y": 280, "type": "small" },
         { "x": 650, "y": 440, "type": "mustache" }
       ],
-      "birds": ["red", "red", "stella","red", "red", "stella", "stella"]
+      "birds": ["red", "red", "stella","red", "red"]
     },
  
     {
@@ -104,42 +106,34 @@
         { "x": 660, "y": 440, "w": 40, "h": 40, "type": "rock" }
       ],
       "pigs": [
-        { "x": 600, "y": 400, "type": "king" }
+        { "x": 580, "y": 400, "type": "king" }
       ],
       "birds": ["red", "red", "stella", "stella", "stella", "red", "red"]
-    },
- 
-    {
-    "boxes": [
-        { "x": 400, "y": 440, "w": 40, "h": 40, "type": "ice" },
-        { "x": 400, "y": 400, "w": 40, "h": 40, "type": "box" },
-        { "x": 400, "y": 360, "w": 40, "h": 40, "type": "rock" }
-      ],
-      "pigs": [
-        { "x": 450, "y": 400, "type": "small" }
-      ],
-      "birds": ["red", "red", "stella"]
     },
     
     {
       "boxes": [
-        { "x": 300, "y": 440, "w": 60, "h": 60, "type": "rock" },
-        { "x": 360, "y": 440, "w": 40, "h": 40, "type": "box" },
-        { "x": 360, "y": 400, "w": 40, "h": 40, "type": "ice" },
-        { "x": 420, "y": 440, "w": 40, "h": 40, "type": "rock" },
-        { "x": 420, "y": 400, "w": 40, "h": 40, "type": "ice" },
-        { "x": 420, "y": 360, "w": 40, "h": 40, "type": "box" },
-        { "x": 480, "y": 440, "w": 40, "h": 40, "type": "ice" },
-        { "x": 480, "y": 400, "w": 40, "h": 40, "type": "box" },
-        { "x": 540, "y": 440, "w": 40, "h": 40, "type": "rock" }
+        { "x": 400, "y": 450, "w": 50, "h": 50, "type": "ice" },
+        { "x": 400, "y": 400, "w": 50, "h": 50, "type": "ice" },
+        { "x": 400, "y": 350, "w": 50, "h": 50, "type": "ice" },
+        { "x": 400, "y": 300, "w": 50, "h": 50, "type": "box" },
+        { "x": 450, "y": 300, "w": 50, "h": 50, "type": "box" },
+        { "x": 500, "y": 300, "w": 50, "h": 50, "type": "box" },
+        { "x": 500, "y": 450, "w": 50, "h": 50, "type": "ice" },
+        { "x": 500, "y": 400, "w": 50, "h": 50, "type": "ice" },
+        { "x": 500, "y": 350, "w": 50, "h": 50, "type": "ice" },
+        { "x": 550, "y": 300, "w": 50, "h": 50, "type": "box" },
+        { "x": 600, "y": 300, "w": 50, "h": 50, "type": "box" },
+        { "x": 600, "y": 350, "w": 50, "h": 50, "type": "rock" },
+        { "x": 600, "y": 400, "w": 50, "h": 50, "type": "rock" },
+        { "x": 600, "y": 450, "w": 50, "h": 50, "type": "rock" }
       ],
       "pigs": [
-        { "x": 450, "y": 400, "type": "medium" },
-        { "x": 500, "y": 380, "type": "large" },
-        { "x": 550, "y": 360, "type": "mustache" },
-        { "x": 600, "y": 340, "type": "king" }
+        { "x": 450, "y": 450, "type": "large" },
+        { "x": 500, "y": 250, "type": "mustache" },
+        { "x": 550, "y": 450, "type": "king" }
       ],
-      "birds": ["stella", "stella", "red", "red"]
+      "birds": ["stella", "stella", "red", "red","stella", "stella", "red", "red"]
     }
   ]
 }
