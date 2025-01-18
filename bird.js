@@ -1,7 +1,7 @@
 class Bird {
   birdTypes = {
     'red': { r: 20, mass: 2, img: birdImg[0]},
-    'stella': { r: 25, mass: 2, img: birdImg[1]},
+    'stella': { r: 20, mass: 2, img: birdImg[1]},
   }
 
   constructor(x, y, type = "red") {
