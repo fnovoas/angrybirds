@@ -61,6 +61,7 @@ class Bird {
     const bird2 = new Bird(this.x, this.y, this.type);
     World.remove(world,bird1.body)
     World.remove(world,bird2.body)
+    // cpiar bien el body
     let newBody = Object.assign({}, this.body); // clone the body with depth 1
     delete newBody.id; // prevent multiple objects with same ID
     delete newBody.parent; // prevent attempt to remove object from parent it's not in
@@ -70,6 +71,10 @@ class Bird {
     bird1.body = Matter.Body.create(newBody);
     bird2.body = Matter.Body.create(newBody);
     bird1.body.angle = this.body.angle + PI/4;
+    // hacerlos pajaros más chiquitos
+    Body.scale(bird1.body, 0.8, 0.8); 
+    Body.scale(bird2.body, 0.8, 0.8); 
+    Body.scale(this.body, 0.8, 0.8); 
     this.clones.push(bird1);
     bird2.body.angle = this.body.angle - PI/4;
     this.clones.push(bird2);
