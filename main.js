@@ -6,9 +6,9 @@ const {
 let engine, world, ground, bird, slingShot, boxes = [], mc, birdImg = [], boxImg, groundImg, bgImg, pigImg, pigs = [], currentLevel = 0;
 let iceImg, rockImg;
 let trajectoryPoints = []; // Almacena los puntos blancos de la trayectoria
-const maxTrajectoryPoints = 6; // Número máximo de puntos visibles
-const minSeparation = 3; // Separación mínima entre puntos
-const maxSeparation = 10; // Separación máxima entre puntos
+const maxTrajectoryPoints = 15; // Número máximo de puntos visibles
+const minSeparation = 10; // Separación mínima entre puntos
+const maxSeparation = 15; // Separación máxima entre puntos
 let gameOver = false; // Bandera para evitar múltiples llamadas
 let birdsQueue = []; // Manejar los pájaros disponibles y su orden
 let lastTouchTime;
