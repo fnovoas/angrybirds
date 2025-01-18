@@ -309,7 +309,7 @@ function loadLevel(levelIndex) {
       case "stella":
         img = birdImg[1];
         break;
-      case "chuck":
+      case "blues":
         img = birdImg[2];
         break;
       default:
