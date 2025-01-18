@@ -20,6 +20,7 @@ function preload() {
   birdImg = [
     loadImage("sprites/red.png"),
     loadImage("sprites/stella.png")
+    // Agregar aqui a chuck
   ];
   boxImg = loadImage("sprites/box.png");
   iceImg = loadImage("sprites/ice.png"); // Bloque de hielo
@@ -74,20 +75,9 @@ function setup() {
   );
   World.add(world, mc);
   ground = new Ground(width / 2, height - 10, width, 20, groundImg); // Crear el suelo
-  // Crear bloques de diferentes tipos
-  // for (let j = 0; j < 4; j++) {
-  //   for (let i = 0; i < 4; i++) {
-  //     if (i % 3 === 0) {
-  //       boxes.push(new Box(400 + j * 60, height - 40 * (i + 1), 40, 40, iceImg, 1)); // Hielo
-  //     } else if (i % 3 === 1) {
-  //       boxes.push(new Box(400 + j * 60, height - 40 * (i + 1), 40, 40, boxImg, 2)); // Madera
-  //     } else {
-  //       boxes.push(new Box(400 + j * 60, height - 40 * (i + 1), 40, 40, rockImg, 3)); // Piedra
-  //     }
-  //   }
-  // }
+  
   noSmooth();
-  bird = new Bird(120, 375, 20, 2, birdImg[0]);
+  bird = new Bird(120, 375, "red");
   slingShot = new SlingShot(bird);
   if (levelData && levelData.levels && levelData.levels.length > 0) {
     loadLevel(0); // Cargar el primer nivel del archivo JSON
@@ -190,6 +180,12 @@ function draw() {
     }
   }
 
+  bird.update(); // Actualizar el pájaro
+  // Power up
+  if (!slingShot.isAttached() && mc.mouse.button === 0) {
+    bird.activatePowerUp();
+  }
+
   slingShot.fly(mc);
   ground.show();
 
@@ -232,7 +228,7 @@ function keyPressed() {
     if (birdsQueue.length > 0) {
       const birdData = birdsQueue.shift(); // Obtener el siguiente pájaro
       World.remove(world, bird.body); // Eliminar el pájaro anterior (si existe)
-      bird = new Bird(120, 375, 20, 2, birdData.img); // Crear un nuevo pájaro
+      bird = new Bird(120, 375, birdData.type); // Crear un nuevo pájaro
       slingShot.attach(bird); // Adjuntar el nuevo pájaro a la resortera
     } else {
       if (bird) { World.remove(world, bird.body); } // Eliminar el pájaro actual
@@ -300,14 +296,28 @@ function loadLevel(levelIndex) {
   }
   // Cargar los pájaros para el nivel
   birdsQueue = level.birds.map(type => {
-    const img = type === "red" ? birdImg[0] : birdImg[1];
+    let img;
+    switch (type) {
+      case "red":
+        img = birdImg[0];
+        break;
+      case "stella":
+        img = birdImg[1];
+        break;
+      case "chuck":
+        img = birdImg[2];
+        break;
+      default:
+        img = birdImg[0]; // Default to red if type is unrecognized
+        break;
+    }
     return { type, img };
   });
 
   // Configurar el primer pájaro en la resortera
   if (birdsQueue.length > 0) {
     const birdData = birdsQueue.shift();
-    bird = new Bird(120, 375, 20, 4, birdData.img);
+    bird = new Bird(120, 375, birdData.type);
     slingShot.attach(bird);
   }
 }
@@ -336,39 +346,7 @@ function loadLevel(levelIndex) {
     // bird = new Bird(120, 375, 20, 2, birdImg[0]); // Crear un nuevo pájaro
     // slingShot.attach(bird); // Reconectar el pájaro a la resortera
   }  
-/*
-function checkLevelCompletion() { // ESTA FUNCIÓN NO ESTÁ FUNCIONANDO CORRECTAMENTE, PROBAR CON ESTA VERSIÓN O CON LA DE LA LÍNEA 352
-  // Comprobar si todos los cerdos están derrotados
-  const allDefeated = pigs.every(pig => pig.isDefeated);
-  
-  if (allDefeated) {
-    console.log("Todos los cerdos están derrotados");
-    nextLevel();
-    return; // Salir de la función, ya que el nivel está completado
-  }
 
-  // Verificar si ya no hay más pájaros disponibles
-  if (birdsQueue.length === 0) {
-    // Verificar si el pájaro tocó el suelo
-    const birdOnGround = bird && bird.body.position.y > height - 40;
-
-    // Si el pájaro tocó el suelo, registrar el tiempo si aún no se ha registrado
-    if (birdOnGround && lastTouchTime === null) {
-      lastTouchTime = millis(); // Guardar el tiempo actual en milisegundos
-      console.log("El pájaro tocó el suelo. Iniciando contador de 2 segundos...");
-    }
-
-    // Si han pasado al menos 2 segundos desde que el pájaro tocó el suelo
-    if (lastTouchTime !== null && millis() - lastTouchTime >= 2000) {
-      console.log("Han pasado 2 segundos. Nivel fallido. Reiniciando...");
-      setTimeout(() => {
-        loadLevel(currentLevel); // Reiniciar el nivel actual
-        lastTouchTime = null; // Reiniciar el tiempo de contacto
-      }, 200); // Reiniciar tras una breve espera
-    }
-  }
-}
-*/
 function checkLevelCompletion() {
   // Comprobar si todos los cerdos están derrotados
   const allDefeated = pigs.every(pig => pig.isDefeated);
@@ -409,7 +387,7 @@ function checkNewBird(){
     if (birdsQueue.length > 0) {
       const birdData = birdsQueue.shift(); // Obtener el siguiente pájaro
       World.remove(world, bird.body); // Eliminar el pájaro anterior (si existe)
-      bird = new Bird(120, 375, 20, 2, birdData.img); // Crear un nuevo pájaro
+      bird = new Bird(120, 375, birdData.type); // Crear un nuevo pájaro
       slingShot.attach(bird); // Adjuntar el nuevo pájaro a la resortera
     } else {
       console.log("Sin más pájaros disponibles."); // Mostrar mensaje si no hay pájaros en la cola
