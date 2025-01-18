@@ -231,7 +231,11 @@ function keyPressed() {
       bird = new Bird(120, 375, birdData.type); // Crear un nuevo pájaro
       slingShot.attach(bird); // Adjuntar el nuevo pájaro a la resortera
     } else {
-      if (bird) { World.remove(world, bird.body); } // Eliminar el pájaro actual
+      // causa un crasheo
+      // if (bird) { World.remove(world, bird.body); } // Eliminar el pájaro actual
+      setTimeout(() => {
+        loadLevel(currentLevel); // Reiniciar el nivel actual
+      }, 2000); // Espera 2000 ms (2 segundos) antes de reiniciar
       console.log("Sin más pájaros disponibles."); // Mostrar mensaje si no hay pájaros en la cola
     }
   }
