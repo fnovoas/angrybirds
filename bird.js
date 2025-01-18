@@ -2,6 +2,7 @@ class Bird {
   birdTypes = {
     'red': { r: 20, mass: 2, img: birdImg[0]},
     'stella': { r: 20, mass: 2, img: birdImg[1]},
+    'blues' : { r:20, mass: 1, img: birdImg[2]},
   }
 
   constructor(x, y, type = "red") {
@@ -12,6 +13,7 @@ class Bird {
       mass: attributes.mass,
     });
     this.type = type;
+    this.clones = [];
     this.img = attributes.img;
     World.add(world, this.body);
     this.powerUpActivated = false;
@@ -35,6 +37,9 @@ class Bird {
     rotate(this.body.angle);
     image(this.img, 0, 0, 2 * this.body.circleRadius, 2 * this.body.circleRadius);
     pop();
+    for (let clone of this.clones){
+      clone.show()
+    }
   }
   
   activatePowerUp() {
@@ -49,6 +54,29 @@ class Bird {
     if (this.body.circleRadius < this.maxRadius) {
       Body.scale(this.body, 2, 2); // Adjust the scale factor as needed
     }
+  }
+  bluesPowerUp(){
+    if (this.singleActivation) return
+    const bird1 = new Bird(this.x, this.y, this.type);
+    const bird2 = new Bird(this.x, this.y, this.type);
+    World.remove(world,bird1.body)
+    World.remove(world,bird2.body)
+    let newBody = Object.assign({}, this.body); // clone the body with depth 1
+    delete newBody.id; // prevent multiple objects with same ID
+    delete newBody.parent; // prevent attempt to remove object from parent it's not in
+    delete newBody.parts; // delete infinate recursion when trying to "clone" the body
+    delete newBody.axis; // prevent weird normal calculations from shared axis
+    delete newBody.bounds; // prevent random collisions from shared bounds
+    bird1.body = Matter.Body.create(newBody);
+    bird2.body = Matter.Body.create(newBody);
+    bird1.body.angle = this.body.angle + PI/4;
+    this.clones.push(bird1);
+    bird2.body.angle = this.body.angle - PI/4;
+    this.clones.push(bird2);
+
+    World.add(world,bird1.body)
+    World.add(world,bird2.body)
+    this.singleActivation = true;
   }
 
   chuckPowerUp() {
@@ -87,6 +115,9 @@ class Bird {
           break;
         case 'red': //Red for now will have the same power up as chuck
           this.chuckPowerUp();
+          break;
+        case 'blues': //Red for now will have the same power up as chuck
+          this.bluesPowerUp();
           break;
         default:
           break;

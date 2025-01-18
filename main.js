@@ -19,7 +19,8 @@ let momentumThreshold = 7;
 function preload() {
   birdImg = [
     loadImage("sprites/red.png"),
-    loadImage("sprites/stella.png")
+    loadImage("sprites/stella.png"),
+    loadImage("sprites/blues.png")
     // Agregar aqui a chuck
   ];
   boxImg = loadImage("sprites/box.png");
