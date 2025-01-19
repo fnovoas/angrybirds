@@ -2,7 +2,8 @@ class Bird {
   birdTypes = {
     'red': { r: 20, mass: 2, img: birdImg[0]},
     'stella': { r: 20, mass: 2, img: birdImg[1]},
-    'blues' : { r:20, mass: 1, img: birdImg[2]},
+    'blues' : { r:15, mass: 1, img: birdImg[2]},
+    'chuck' : { r:20, mass: 2, img: birdImg[3]},
   }
 
   constructor(x, y, type = "red") {
@@ -118,7 +119,7 @@ class Bird {
         case 'stella':
           this.stellaPowerUp();
           break;
-        case 'red': //Red for now will have the same power up as chuck
+        case 'chuck': //Red for now will have the same power up as chuck
           this.chuckPowerUp();
           break;
         case 'blues': //Red for now will have the same power up as chuck

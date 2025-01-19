@@ -20,8 +20,8 @@ function preload() {
   birdImg = [
     loadImage("sprites/red.png"),
     loadImage("sprites/stella.png"),
-    loadImage("sprites/blues.png")
-    // Agregar aqui a chuck
+    loadImage("sprites/blues.png"),
+    loadImage("sprites/chuck.png")
   ];
   boxImg = loadImage("sprites/box.png");
   iceImg = loadImage("sprites/ice.png"); // Bloque de hielo
@@ -311,6 +311,9 @@ function loadLevel(levelIndex) {
         break;
       case "blues":
         img = birdImg[2];
+        break;
+      case "chuck":
+        img = birdImg[3];
         break;
       default:
         img = birdImg[0]; // Default to red if type is unrecognized
