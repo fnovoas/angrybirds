@@ -15,6 +15,9 @@ let lastTouchTime;
 let birdSpeedRecord100 = []; // Almacena los ultimos 100 tiempos de vuelo de los pájaros
 const movementThreshold = 0.1;
 let momentumThreshold = 7;
+let gameStarted = false;
+let time = 0;
+let changingLevel = false;
 
 function preload() {
   birdImg = [
@@ -168,53 +171,63 @@ function displayBirdQueue() {
 function draw() {
   // Limpia el canvas con un fondo blanco
   background(255);
-
-  //RESIZE background image
-  image(bgImg, bgImg.width , bgImg.height, width, height+50);
-  Engine.update(engine);
-
-  // Registrar la velocidad del pájaro
-  if (bird && !slingShot.isAttached()) {
-    birdSpeedRecord100.push(bird.body.speed);
-    if (birdSpeedRecord100.length > 100) {
-      birdSpeedRecord100.shift(); // Eliminar el valor más antiguo
+  
+  // We add new start screen
+  if (!gameStarted) {
+    startScreen();
+  } else if (changingLevel) {
+    showlevel(currentLevel + 1);
+    if (millis() - time > 2000) {
+      changingLevel = false;
     }
+  } else {
+    //RESIZE background image
+    image(bgImg, bgImg.width , bgImg.height, width, height+50);
+    Engine.update(engine);
+    
+    // Registrar la velocidad del pájaro
+    if (bird && !slingShot.isAttached()) {
+      birdSpeedRecord100.push(bird.body.speed);
+      if (birdSpeedRecord100.length > 100) {
+        birdSpeedRecord100.shift(); // Eliminar el valor más antiguo
+      }
+    }
+    
+    bird.update(); // Actualizar el pájaro
+    // Power up
+    if (!slingShot.isAttached() && mc.mouse.button === 0) {
+      bird.activatePowerUp();
+    }
+    
+    slingShot.fly(mc);
+    ground.show();
+    
+    // Asegurar que todas las cajas se dibujen
+    for (const box of boxes) {
+      box.show();
+    }
+    
+    // Dibujar los puntos de trayectoria
+    slingShot.calculateTrajectory(); // Actualizar los puntos
+    for (const point of trajectoryPoints) {
+      push();
+      fill(255);
+      stroke(0);
+      strokeWeight(1);
+      ellipse(point.x, point.y, point.size); // Dibujar un círculo por punto
+      pop();
+    }
+    
+    slingShot.show();
+    bird.show();
+    
+    for (const pig of pigs) {
+      pig.display();
+    }
+    checkNewBird(); // DESCOMENTAR PARA QUE SE SUBAN LOS PAJAROS AUTOMATICAMENTE
+    checkLevelCompletion(); // Revisar si todos los cerdos están derrotados
+    displayBirdQueue(); // Mostrar la cola de pájaros
   }
-
-  bird.update(); // Actualizar el pájaro
-  // Power up
-  if (!slingShot.isAttached() && mc.mouse.button === 0) {
-    bird.activatePowerUp();
-  }
-
-  slingShot.fly(mc);
-  ground.show();
-
-  // Asegurar que todas las cajas se dibujen
-  for (const box of boxes) {
-    box.show();
-  }
-
-  // Dibujar los puntos de trayectoria
-  slingShot.calculateTrajectory(); // Actualizar los puntos
-  for (const point of trajectoryPoints) {
-    push();
-    fill(255);
-    stroke(0);
-    strokeWeight(1);
-    ellipse(point.x, point.y, point.size); // Dibujar un círculo por punto
-    pop();
-  }
-
-  slingShot.show();
-  bird.show();
-
-  for (const pig of pigs) {
-    pig.display();
-  }
-  checkNewBird(); // DESCOMENTAR PARA QUE SE SUBAN LOS PAJAROS AUTOMATICAMENTE
-  checkLevelCompletion(); // Revisar si todos los cerdos están derrotados
-  displayBirdQueue(); // Mostrar la cola de pájaros
 }
 
 function keyPressed() {
@@ -337,11 +350,17 @@ function loadLevel(levelIndex) {
     
     // Incrementar el índice del nivel actual
     currentLevel++;
+    changingLevel = true;
+
+    time = millis();
+    // Mostrar pantalla de nuevo nivel
+  
   
     // Comprobar si se ha alcanzado el último nivel
     if (currentLevel >= levelData.levels.length) {
       console.log("¡Victoria! Has completado todos los niveles."); // Mensaje final de victoria
       gameOver = true; // Marcar el juego como terminado
+      winScreen(); // Mostrar pantalla de victoria
       noLoop(); // Detener la ejecución del juego
       return; // Salir de la función
     }
@@ -353,7 +372,44 @@ function loadLevel(levelIndex) {
     // Reiniciar el pájaro y la resortera para el nuevo nivel
     // bird = new Bird(120, 375, 20, 2, birdImg[0]); // Crear un nuevo pájaro
     // slingShot.attach(bird); // Reconectar el pájaro a la resortera
-  }  
+  } 
+
+function winScreen() {
+  push();
+  background(0);
+  fill(255);
+  textAlign(CENTER, CENTER);
+  textSize(32);
+  text("HAS GANADO", width / 2, height / 2 - 50);
+  textSize(16);
+  text("Gracias por jugar", width / 2, height / 2);
+  pop();
+}
+
+function startScreen() {
+  push();
+  background(0);
+  fill(255);
+  textAlign(CENTER, CENTER);
+  textSize(32);
+  text("ANGRY BIRDS", width / 2, height / 2 - 50);
+  textSize(16);
+  text("Presiona cualquier tecla para comenzar", width / 2, height / 2);
+  pop();
+  if (keyIsPressed) {
+    gameStarted = true;
+  }
+}
+
+function showlevel(level) {
+  push();
+  background(0);
+  fill(255);
+  textAlign(CENTER, CENTER);
+  textSize(32);
+  text("LEVEL " + level, width / 2, height / 2 - 50);
+  pop();
+}
 
 function checkLevelCompletion() {
   // Comprobar si todos los cerdos están derrotados

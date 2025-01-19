@@ -10,7 +10,7 @@
       "pigs": [
         { "x": 450, "y": 440, "type": "small" }
       ],
-      "birds": ["chuck", "blues", "stella"]
+      "birds": ["red"]
     },
     {
     "boxes": [
@@ -27,7 +27,7 @@
         { "x": 450, "y": 400, "type": "small" },
         { "x": 550, "y": 440, "type": "small" }
       ],
-      "birds": ["red", "chuck"]
+      "birds": ["blues", "red"]
     },
     {
     "boxes": [
@@ -43,7 +43,7 @@
         { "x": 550, "y": 440, "type": "medium" },
         { "x": 450, "y": 440, "type": "small" }
       ],
-      "birds": ["red", "stella", "red"]
+      "birds": ["stella", "stella"]
     },
 
     {
