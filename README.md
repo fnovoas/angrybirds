@@ -18,6 +18,12 @@ Reiniciar nivel: r.
 Subir el siguiente pájaro a la resortera: espacio.
 
 
+### Poderes de los pájaros:
+- Red (rojo): no tiene.
+- Stella (rosado): aumenta inmediatamente su tamaño y masa.
+- Blues (azul): se divide en tres clones pequeños.
+- Chuck (amarillo): aumenta inmediatamente su velocidad de vuelo.
+
 
 ### Objetivo:
 Superar todos los niveles, destruyendo a las bolas de billar enemigas. La barra verde vertical al lado derecho de cada enemigo indica sus puntos de vida restantes.
