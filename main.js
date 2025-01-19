@@ -18,6 +18,7 @@ let momentumThreshold = 7;
 let gameStarted = false;
 let time = 0;
 let changingLevel = false;
+let bonkSound, breakBoxSound, breakIceSound, breakStoneSound;
 
 function preload() {
   birdImg = [
@@ -40,6 +41,11 @@ function preload() {
     loadImage("sprites/pig6.png")
   ];
   slingshotImg = loadImage("sprites/slingshot.png");
+    // Cargar sonidos
+    bonkSound = loadSound("sounds/bonk.wav");
+    breakBoxSound = loadSound("sounds/break_box.wav");
+    breakIceSound = loadSound("sounds/break_ice.wav");
+    breakStoneSound = loadSound("sounds/break_stone.wav");
   levelData = loadJSON("config.json", () => { // Cargar configuración de niveles
     console.log("Archivo config.json cargado");
   }, () => {
@@ -88,43 +94,55 @@ function setup() {
   } else {
     console.error("No se encontraron niveles en config.json");
   } 
-  // Detectar colisiones
+// Detectar colisiones
 Matter.Events.on(engine, "collisionStart", (event) => {
-  
   for (const pair of event.pairs) {
-    const bodyA = pair.bodyA;
-    const bodyB = pair.bodyB;
+      const bodyA = pair.bodyA;
+      const bodyB = pair.bodyB;
 
-    // Calcular momento
-    const momentumBodyA = {
-      x: bodyA.velocity.x * (isFinite(bodyA.mass) ? bodyA.mass : 0),
-      y: bodyA.velocity.y * (isFinite(bodyA.mass) ? bodyA.mass : 0)
-    };
-    const momentumBodyB = {
-      x: bodyB.velocity.x * (isFinite(bodyB.mass) ? bodyB.mass : 0),
-      y: bodyB.velocity.y * (isFinite(bodyB.mass) ? bodyB.mass : 0)
-    };
-    const relativeMomentum = Math.sqrt(
-      Math.pow(momentumBodyA.x - momentumBodyB.x, 2) +
-      Math.pow(momentumBodyA.y - momentumBodyB.y, 2)
-    );
+      // Calcular momento
+      const momentumBodyA = {
+          x: bodyA.velocity.x * (isFinite(bodyA.mass) ? bodyA.mass : 0),
+          y: bodyA.velocity.y * (isFinite(bodyA.mass) ? bodyA.mass : 0)
+      };
+      const momentumBodyB = {
+          x: bodyB.velocity.x * (isFinite(bodyB.mass) ? bodyB.mass : 0),
+          y: bodyB.velocity.y * (isFinite(bodyB.mass) ? bodyB.mass : 0)
+      };
+      const relativeMomentum = Math.sqrt(
+          Math.pow(momentumBodyA.x - momentumBodyB.x, 2) +
+          Math.pow(momentumBodyA.y - momentumBodyB.y, 2)
+      );
 
-    if (relativeMomentum > momentumThreshold) {
-      console.log("Colisión con momento detectada");
-      for (const pig of pigs) {
-        if (bodyA === pig.body || bodyB === pig.body) {
-          console.log(pair);
-          //const isBirdInvolved = bodyA === bird.body || bodyB === bird.body;
-          //const damage = isBirdInvolved ? relativeMomentum * 2 : relativeMomentum;
-          pig.takeDamage(relativeMomentum);
-        }
+      if (relativeMomentum > momentumThreshold) {
+          console.log("Colisión con momento detectada");
+
+          // Sonido de impacto
+          bonkSound.play();
+
+          for (const pig of pigs) {
+              if (bodyA === pig.body || bodyB === pig.body) {
+                  console.log(pair);
+                  pig.takeDamage(relativeMomentum);
+              }
+          }
+          for (const box of boxes) {
+              if (bodyA === box.body || bodyB === box.body) {
+                  const boxType = box.img; // Identificar el tipo de bloque
+                  box.takeDamage(relativeMomentum);
+
+                  if (box.health <= 0) {
+                      if (boxType === iceImg) {
+                          breakIceSound.play();
+                      } else if (boxType === rockImg) {
+                          breakStoneSound.play();
+                      } else {
+                          breakBoxSound.play();
+                      }
+                  }
+              }
+          }
       }
-      for (const box of boxes) {
-        if (bodyA === box.body || bodyB === box.body) {
-          box.takeDamage(relativeMomentum);
-        }
-      }
-    }
   }
 });
   const walls = [
