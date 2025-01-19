@@ -117,9 +117,6 @@ Matter.Events.on(engine, "collisionStart", (event) => {
       if (relativeMomentum > momentumThreshold) {
           console.log("Colisión con momento detectada");
 
-          // Sonido de impacto
-          bonkSound.play();
-
           for (const pig of pigs) {
               if (bodyA === pig.body || bodyB === pig.body) {
                   console.log(pair);
@@ -141,6 +138,9 @@ Matter.Events.on(engine, "collisionStart", (event) => {
                       }
                   }
               }
+          }
+          if (bodyA === bird.body || bodyB === bird.body) {
+              bonkSound.play();
           }
       }
   }
