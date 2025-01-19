@@ -19,6 +19,7 @@ let gameStarted = false;
 let time = 0;
 let changingLevel = false;
 let bonkSound, breakBoxSound, breakIceSound, breakStoneSound;
+let winner = false;
 
 function preload() {
   birdImg = [
@@ -198,6 +199,9 @@ function draw() {
     if (millis() - time > 2000) {
       changingLevel = false;
     }
+  } else if (winner) {
+    winScreen(); // Mostrar pantalla de victoria
+    noLoop(); // Detener la ejecución del juego
   } else {
     //RESIZE background image
     image(bgImg, bgImg.width , bgImg.height, width, height+50);
@@ -368,7 +372,6 @@ function loadLevel(levelIndex) {
     
     // Incrementar el índice del nivel actual
     currentLevel++;
-    changingLevel = true;
 
     time = millis();
     // Mostrar pantalla de nuevo nivel
@@ -378,10 +381,11 @@ function loadLevel(levelIndex) {
     if (currentLevel >= levelData.levels.length) {
       console.log("¡Victoria! Has completado todos los niveles."); // Mensaje final de victoria
       gameOver = true; // Marcar el juego como terminado
-      winScreen(); // Mostrar pantalla de victoria
-      noLoop(); // Detener la ejecución del juego
+      winner = true;
       return; // Salir de la función
     }
+
+    changingLevel = true;
   
     // Si aún hay niveles disponibles, cargar el siguiente nivel
     console.log(`Cargando nivel ${currentLevel}`);
