@@ -8,10 +8,15 @@ Diríjase a [https://fnovoas.github.io/angrybirds/](https://fnovoas.github.io/an
 
 ### Controles:
 Tirar de la resortera: clic izquierdo + arrastrar.
+
 Disparar: soltar clic.
+
 Activar poder del pájaro (en el aire): clic izquierdo.
+
 Reiniciar nivel: r.
+
 Subir el siguiente pájaro a la resortera: espacio.
+
 
 
 ### Objetivo:
@@ -23,6 +28,6 @@ Brayan Camilo Rodríguez Díaz
 
 Fernando Novoa Salazar
 
-Juan Felipe Fontecha Vasquez
+Juan Felipe Fontecha Vásquez
 
 Juan David Vásquez Pinzón
