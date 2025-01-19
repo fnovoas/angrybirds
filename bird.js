@@ -130,5 +130,14 @@ class Bird {
       }
     }
   }
+
+  removeBird(){
+    World.remove(world, this.body);
+    if (this.clones.length > 0){
+      for (let clone of this.clones){
+        World.remove(world, clone.body);
+      }
+    }
+  }
 }
 

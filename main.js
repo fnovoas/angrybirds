@@ -228,7 +228,7 @@ function keyPressed() {
     // Si no hay pájaro en la resortera, subir el siguiente de la cola
     if (birdsQueue.length > 0) {
       const birdData = birdsQueue.shift(); // Obtener el siguiente pájaro
-      World.remove(world, bird.body); // Eliminar el pájaro anterior (si existe)
+      bird.removeBird(); // Eliminar el pájaro anterior (si existe)
       bird = new Bird(120, 375, birdData.type); // Crear un nuevo pájaro
       slingShot.attach(bird); // Adjuntar el nuevo pájaro a la resortera
     } else {
@@ -259,7 +259,7 @@ function loadLevel(levelIndex) {
   // Eliminar todos los cerdos, cajas y pájaros actuales
   for (const box of boxes) World.remove(world, box.body);
   for (const pig of pigs) World.remove(world, pig.body);
-  if (bird) World.remove(world, bird.body); // Eliminar el pájaro actual
+  if (bird) bird.removeBird(); // Eliminar el pájaro actual
   birdsQueue = []; // Vaciar la cola de pájaros
 
   // Reiniciar arrays
@@ -394,7 +394,7 @@ function checkNewBird(){
   if( checkWorldStillness() && !slingShot.isAttached()){
     if (birdsQueue.length > 0) {
       const birdData = birdsQueue.shift(); // Obtener el siguiente pájaro
-      World.remove(world, bird.body); // Eliminar el pájaro anterior (si existe)
+      bird.removeBird() // Eliminar el pájaro anterior (si existe)
       bird = new Bird(120, 375, birdData.type); // Crear un nuevo pájaro
       slingShot.attach(bird); // Adjuntar el nuevo pájaro a la resortera
     } else {
