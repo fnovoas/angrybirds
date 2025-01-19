@@ -130,7 +130,7 @@
         { "x": 600, "y": 450, "w": 50, "h": 50, "type": "rock" }
       ],
       "pigs": [
-        { "x": 450, "y": 450, "type": "large" },
+        { "x": 450, "y": 450, "type": "helmet" },
         { "x": 650, "y": 450, "type": "large" },
         { "x": 500, "y": 250, "type": "mustache" },
         { "x": 550, "y": 450, "type": "king" }
